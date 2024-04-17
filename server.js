@@ -19,11 +19,17 @@ app.post('/crearEvento', (req, res) => {
     return res.status(400).send('Falta información requerida');
   }
 
+  // Obtener la hora actual
+  const now = new Date();
+  const horaActual = now.getHours().toString().padStart(2, '0');
+  const minutosActuales = now.getMinutes().toString().padStart(2, '0');
+  const segundosActuales = now.getSeconds().toString().padStart(2, '0');
+
   // Crear un directorio con el nombre de la fecha dentro de 'public'
   const directorioFecha = path.join(__dirname, 'public', 'directorio-de-eventos', fecha);
 
-  // Crear un archivo de texto con el nombre del título y poner la descripción dentro
-  const archivoNombre = path.join(directorioFecha, titulo + '.txt');
+  // Crear un archivo de texto con el nombre del título y la hora actual y poner la descripción dentro
+  const archivoNombre = path.join(directorioFecha, `${titulo}_${horaActual}-${minutosActuales}-${segundosActuales}.txt`);
 
   const contenido = `Título: ${titulo}\nDescripción: ${descripcion}`;
 

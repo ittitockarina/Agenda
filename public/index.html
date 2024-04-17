@@ -100,6 +100,7 @@
 
         <button type="submit" id="guardarBoton">Guardar</button>
 
+        <button type="button" id="borrarBoton">Borrar Archivo</button>
 
     </form>
 
@@ -204,11 +205,11 @@
                 // Hacer una solicitud GET para explorar el árbol de la carpeta
                 $.get('http://localhost:3000/explorar', function (data) {
                     // Mostrar el árbol de la carpeta en la consola (puedes cambiar esto según tu requerimiento)
-                    const treeHtml = formatTree(data);
-                    // Agregar el árbol generado al contenedor en tu página
+                    const treeHtml = generateTreeHtml(data);
+                    console.log(data);
                     $('.tree').html(treeHtml);
                     //console.log(formatTree(data));
-                    console.log(data);
+                    
 
                                 // Puedes procesar y mostrar el árbol de la carpeta en tu página aquí
                 }).fail(function () {
@@ -216,42 +217,72 @@
                 });
             });
 
+                    // Cuando se cambia la carpeta seleccionada
+            $('#carpeta').change(function () {
+                // Cargar el contenido del archivo al seleccionar una carpeta y un archivo
+                cargarContenidoArchivo();
+            });
+
+            // Cuando se cambia el archivo seleccionado
+            $('#contenido').change(function () {
+                // Cargar el contenido del archivo al seleccionar una carpeta y un archivo
+                cargarContenidoArchivo();
+            });
+
         });
+
+
+        function cargarContenidoArchivo() {
+            const carpetaSeleccionada = $('#carpeta').val();
+            const archivoSeleccionado = $('#contenido').val();
+
+            // Hacer una solicitud GET para obtener el contenido del archivo seleccionado
+            $.get(`http://localhost:3000/contenidoArchivo?carpeta=${carpetaSeleccionada}&archivo=${archivoSeleccionado}`, function (data) {
+                $('#contenidoArchivo').val(data.contenido);
+            });
+        }
 
         function generateTreeHtml(node) {
     let html = '<ul>';
-    for (let key in node) {
-        if (node.hasOwnProperty(key)) {
-            let item = node[key];
-            html += '<li>';
-            if (item.tipo === 'carpeta') {
-                html += `<i class="fa fa-folder-open"></i> ${item.nombre}`;
-                if (item.contenido) {
-                    html += generateTreeHtml(item.contenido);
+
+    if (node.tipo === 'carpeta') {
+        html += `<li><i class="fa fa-folder-open"></i> ${node.nombre}`;
+        if (node.contenido && node.contenido.length > 0) {
+            html += '<ul>';
+            node.contenido.forEach(item => {
+                html += '<li>';
+                if (item.tipo === 'carpeta') {
+                    html += generateTreeHtml(item); // Recursión para generar el árbol de la carpeta
+                } else {
+                    html += `<i class="fa fa-file"></i> ${item.nombre}`;
                 }
-            } else {
-                html += `<i class="fa fa-file"></i> ${item.nombre}`;
-            }
-            html += '</li>';
+                html += '</li>';
+            });
+            html += '</ul>';
         }
+        html += '</li>';
+    } else {
+        html += `<li><i class="fa fa-file"></i> ${node.nombre}</li>`;
     }
+
     html += '</ul>';
     return html;
 }
 
-
 function formatTree(node) {
     let html = '<ul>';
-    node.forEach(item => {
+    for (const item of node) {
         html += '<li>';
         if (item.tipo === 'carpeta') {
             html += `<i class="fa fa-folder-open"></i> ${item.nombre}`;
-            html += generateTreeHtml(item.contenido); // Accede al array contenido para generar el árbol de la carpeta
+            if (item.contenido && item.contenido.length > 0) {
+                html += formatTree(item.contenido); // Recursión para generar el árbol de la carpeta
+            }
         } else {
             html += `<i class="fa fa-file"></i> ${item.nombre.split('.').slice(0, -1).join('.')}`;
         }
         html += '</li>';
-    });
+    }
     html += '</ul>';
     return html;
 }
