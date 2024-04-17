@@ -163,6 +163,61 @@
                 });
             });
 
+            $('#guardarBoton').click(function () {
+                const carpetaSeleccionada = $('#carpeta').val();
+                const archivoSeleccionado = $('#contenido').val();
+                const nuevoContenido = $('#contenidoArchivo').val();
+
+                // Utiliza $.post para enviar los datos al servidor con el método POST
+                $.post('http://localhost:3000/guardarArchivo', {
+                    carpeta: carpetaSeleccionada,
+                    archivo: archivoSeleccionado,
+                    contenido: nuevoContenido
+                }, function (response) {
+                    alert(response); // Muestra un mensaje de éxito o error
+                    // Actualiza la lista de archivos después de guardar
+                    cargarArchivosDeCarpeta(carpetaSeleccionada);
+                }).fail(function () {
+                    alert('Error al guardar el archivo.');
+                });
+            });
+
+            // Manejar el clic en el botón de borrar
+            $('#borrarBoton').click(function () {
+                const carpetaSeleccionada = $('#carpeta').val();
+                const archivoSeleccionado = $('#contenido').val();
+
+                // Hacer una solicitud POST al servidor para borrar el archivo
+                $.post('http://localhost:3000/borrarArchivo', {
+                    carpeta: carpetaSeleccionada,
+                    archivo: archivoSeleccionado
+                }, function (response) {
+                    alert(response); // Muestra un mensaje de éxito o error
+                    // Actualiza la lista de archivos después de borrar
+                    cargarArchivosDeCarpeta(carpetaSeleccionada);
+                }).fail(function () {
+                    alert('Error al borrar el archivo.');
+                });
+            });
+
+            $('#explorarBoton').click(function () {
+                // Hacer una solicitud GET para explorar el árbol de la carpeta
+                $.get('http://localhost:3000/explorar', function (data) {
+                    // Mostrar el árbol de la carpeta en la consola (puedes cambiar esto según tu requerimiento)
+                    const treeHtml = formatTree(data);
+                    // Agregar el árbol generado al contenedor en tu página
+                    $('.tree').html(treeHtml);
+                    //console.log(formatTree(data));
+                    console.log(data);
+
+                                // Puedes procesar y mostrar el árbol de la carpeta en tu página aquí
+                }).fail(function () {
+                    alert('Error al explorar la carpeta.');
+                });
+            });
+
+        });
+
         function generateTreeHtml(node) {
     let html = '<ul>';
     for (let key in node) {

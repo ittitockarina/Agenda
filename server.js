@@ -155,6 +155,47 @@ app.post('/borrarArchivo', (req, res) => {
   });
 });
 
+app.get('/explorar', (req, res) => {
+  const directorioEventos = path.join(__dirname, 'public', 'directorio-de-eventos');
+  // Llama a la función explorarCarpeta para obtener el árbol de la carpeta
+  explorarCarpeta(directorioEventos)
+      .then(arbol => res.json(arbol))
+      .catch(error => {
+          console.error('Error al explorar la carpeta:', error);
+          res.status(500).send('Error interno del servidor al explorar la carpeta');
+      });
+});
+
+
+// Función para explorar recursivamente el árbol de la carpeta
+function explorarCarpeta(ruta) {
+  return new Promise((resolve, reject) => {
+      fs.readdir(ruta, { withFileTypes: true }, (err, elementos) => {
+          if (err) {
+              reject(err);
+              return;
+          }
+
+          const arbol = { nombre: path.basename(ruta), tipo: 'carpeta', contenido: [] };
+
+          const promesas = elementos.map(elemento => {
+              const elementoRuta = path.join(ruta, elemento.name);
+              if (elemento.isDirectory()) {
+                  return explorarCarpeta(elementoRuta).then(subArbol => {
+                      arbol.contenido.push(subArbol);
+                  });
+              } else {
+                  arbol.contenido.push({ nombre: elemento.name, tipo: 'archivo' });
+                  return Promise.resolve();
+              }
+          });
+
+          Promise.all(promesas)
+              .then(() => resolve(arbol))
+              .catch(reject);
+      });
+  });
+}
 
 
 app.listen(port, () => {
