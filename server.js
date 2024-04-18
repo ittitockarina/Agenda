@@ -9,27 +9,24 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true })); // Middleware para analizar los datos del formulario
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/public/index2.html');
 });
 
 app.post('/crearEvento', (req, res) => {
-  const { fecha, titulo, descripcion } = req.body;
+  const { fecha, titulo, descripcion, hora } = req.body;
 
-  if (!fecha || !titulo || !descripcion) {
+  if (!fecha || !titulo || !descripcion || !hora) {
     return res.status(400).send('Falta información requerida');
   }
 
-  // Obtener la hora actual
-  const now = new Date();
-  const horaActual = now.getHours().toString().padStart(2, '0');
-  const minutosActuales = now.getMinutes().toString().padStart(2, '0');
-  const segundosActuales = now.getSeconds().toString().padStart(2, '0');
+  // Convertir la hora proporcionada a formato de hora y minutos
+  const [horaEvento, minutosEvento] = hora.split(':');
 
   // Crear un directorio con el nombre de la fecha dentro de 'public'
   const directorioFecha = path.join(__dirname, 'public', 'directorio-de-eventos', fecha);
 
-  // Crear un archivo de texto con el nombre del título y la hora actual y poner la descripción dentro
-  const archivoNombre = path.join(directorioFecha, `${titulo}_${horaActual}-${minutosActuales}-${segundosActuales}.txt`);
+  // Crear un archivo de texto con el nombre del título y la hora del evento y poner la descripción dentro
+  const archivoNombre = path.join(directorioFecha, `${titulo}_${horaEvento}-${minutosEvento}.txt`);
 
   const contenido = `Título: ${titulo}\nDescripción: ${descripcion}`;
 
