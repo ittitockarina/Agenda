@@ -1,160 +1,350 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Crear Evento</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        .container table.striped {
+            background-color: #ffffff;
+            /* Cambia el color de fondo de la tabla a blanco */
         }
+
+        /* Cambia el color de fondo solo para el body */
+        body {
+            background-color: #ffcdd2;
+        }
+
+        /* Restaura el color de fondo original para los formularios */
+        form {
+            background-color: #f4f4f4;
+        }
+
         h1 {
             color: #333;
         }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        input[type="submit"],
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover,
-        button:hover {
-            background-color: #45a049;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        #contenidoArchivo {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
     </style>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
+
 <body>
-    <h1>Crear Evento</h1>
 
-    <form id="eventoForm" action="http://localhost:3000/crearEvento" method="POST">
-        <label for="titulo">Título:</label>
-        <input type="text" id="titulo" name="titulo" placeholder="Título del evento" required><br>
+    <div class="container">
 
-        <label for="descripcion">Descripción:</label><br>
-        <textarea id="descripcion" name="descripcion" rows="4" cols="50" placeholder="Descripción del evento" required></textarea><br>
+        <form id="eventoForm2" action="http://localhost:3000/crearEvento" method="POST" class="rounded z-depth-5">
+            <h4 class="center-align">Crear Nuevo Evento</h4>
 
-        <label for="fecha">Fecha:</label>
-        <input type="date" id="fecha" name="fecha" required><br>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">title</i>
+                    <input type="text" id="titulo" name="titulo" class="validate" required>
+                    <label for="titulo">Título:</label>
+                </div>
+            </div>
 
-        <input type="submit" value="Crear Evento">
-    </form>
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">description</i>
+                    <textarea id="descripcion" name="descripcion" class="materialize-textarea validate"
+                        required></textarea>
+                    <label for="descripcion">Descripción:</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">event</i>
+                    <input type="text" id="fecha" name="fecha" class="datepicker" required>
+
+                    <label for="fecha">Fecha:</label>
+                </div>
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">access_time</i>
+                    <input type="text" id="hora" name="hora" class="timepicker" required>
+
+                    <label for="hora">Hora:</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <button class="btn waves-effect red lighten-2" type="submit" name="action">
+                        <i class="material-icons left">send</i>Crear Evento
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container" hidden>
+        <form id="editarForm" class="z-depth-5">
+            <div class="row">
+                <div class="input-field col s12">
+                    <select id="carpeta" name="carpeta">
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Segundo select para mostrar el contenido de la carpeta seleccionada -->
+                <div class="input-field col s12">
+                    <select id="contenido" name="contenido">
+                        <option value="" disabled selected>Selecciona una carpeta primero</option>
+                        <option value="archivo1">Archivo 1</option>
+                        <option value="archivo2">Archivo 2</option>
+                        <option value="archivo3">Archivo 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="contenidoArchivo" class="materialize-textarea"></textarea>
+                    <label for="contenidoArchivo">Contenido:</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+
+                    <button class="btn waves-effect waves-light" type="submit">Editar</button>
+                    <button class="btn waves-effect waves-light" type="submit" id="guardarBoton">Guardar</button>
+                    <button class="btn waves-effect waves-light" type="button" id="borrarBoton">Borrar Archivo</button>
+                </div>
+            </div>
 
 
 
-    <!-- Formulario para seleccionar una carpeta -->
-    <form id="editarForm">
-        <label for="carpeta">Selecciona una carpeta:</label>
-        <select id="carpeta" name="carpeta">
-            <!-- Opciones se generarán dinámicamente aquí -->
-        </select>
+        </form>
+    </div>
 
-        <!-- Segundo select para mostrar el contenido de la carpeta seleccionada -->
-        <label for="contenido">Contenido de la carpeta:</label>
-        <select id="contenido" name="contenido">
-            <!-- Opciones se generarán dinámicamente aquí -->
-        </select>
+    <!-- Tabla de Carpetas -->
+    <div class="container">
+        <h4 class="center-align ">Carpetas</h4>
+        <table class="striped" id="tablaCarpetas">
+            <thead>
+                <tr>
+                    <th>Nombre de la Carpeta</th>
+                    <th>Archivos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí puedes agregar filas dinámicamente con JavaScript -->
+                <!-- Por ejemplo: <tr><td>Carpeta 1</td><td><a href="#">Editar</a> | <a href="#">Eliminar</a></td></tr> -->
+            </tbody>
+        </table>
+    </div>
 
-        <button type="submit">Editar</button>
+    <!-- Modal Structure -->
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <h4 id="tituloModal">Editar Archivo</h4>
+            <div class="input-field">
+                <input id="nombreArchivo2" type="text" class="validate" disabled>
+                <label for="nombreArchivo2">Nombre del Archivo</label>
+            </div>
+            <div class="input-field">
+                <input id="carpetaArchivo2" type="text" class="validate" disabled>
+                <label for="carpetaArchivo2">Carpeta</label>
+            </div>
+            <div class="input-field">
+                <textarea id="contenidoArchivo2" class="materialize-textarea"></textarea>
+                <label for="contenidoArchivo2">Contenido del Archivo</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+            <a id="botonGuardar2" class="waves-effect waves-green btn-flat">Guardar</a>
+        </div>
+    </div>
 
-        <button type="submit" id="guardarBoton">Guardar</button>
-
-        <button type="button" id="borrarBoton">Borrar Archivo</button>
-
-    </form>
 
 
-<!-- Textarea para mostrar el contenido del archivo -->
-    <textarea id="contenidoArchivo" rows="10" cols="50"></textarea>
-
-    <button id="explorarBoton">Explorar Carpeta</button>
-    <div class="tree"></div>
-
-    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script>
+        function abrirModalEditar(carpetaSeleccionada, archivoSeleccionado) {
+            if (!archivoSeleccionado) {
+                alert('Seleccione un archivo primero');
+                return;
+            }
+
+            // Asignar el nombre del archivo al título del modal
+            $('#tituloModal').text(`Editar Archivo: ${archivoSeleccionado}`);
+            $('#carpetaArchivo2').val(carpetaSeleccionada);
+
+            $('#nombreArchivo2').val(archivoSeleccionado);
+
+            // Hacer una solicitud GET para obtener el contenido del archivo seleccionado
+            $.get(`http://localhost:3000/contenidoArchivo?carpeta=${carpetaSeleccionada}&archivo=${archivoSeleccionado}`, function (data) {
+                // Colocar el contenido del archivo en el campo de texto del modal
+                $('#contenidoArchivo2').val(data.contenido);
+                M.updateTextFields();
+
+            });
+
+            M.updateTextFields();
+
+
+
+            // Abrir el modal
+            $('#modalEditar').modal('open');
+        }
+
+
+
+
+
         $(document).ready(function () {
+            $('select').formSelect();
+            $('.datepicker').datepicker();
+            $('.timepicker').timepicker();
+            $('.modal').modal();
+
+            $('#botonGuardar2').on('click', function () {
+                // Obtener la carpeta y el archivo seleccionados del modal
+                const carpetaSeleccionada = $('#carpetaArchivo2').val();
+                const archivoSeleccionado = $('#nombreArchivo2').val();
+                const nuevoContenido = $('#contenidoArchivo2').val();
+                // Llamar a la función para guardar el archivo con los parámetros correspondientes
+                $.post('http://localhost:3000/guardarArchivo', {
+                    carpeta: carpetaSeleccionada,
+                    archivo: archivoSeleccionado,
+                    contenido: nuevoContenido
+                }, function (response) {
+                    alert(response); // Muestra un mensaje de éxito o error
+                    // Actualiza la lista de archivos después de guardar
+                    cargarArchivosDeCarpeta(carpetaSeleccionada);
+                }).fail(function () {
+                    alert('Error al guardar el archivo.');
+                });
+            });
+
+
+            // Cargar las carpetas disponibles
+            $.get('http://localhost:3000/carpetasDisponibles', function (data) {
+                const tablaCarpetas = $('#tablaCarpetas tbody');
+
+                // Limpiar la tabla antes de agregar nuevas filas
+                tablaCarpetas.empty();
+
+                // Generar filas en la tabla para cada carpeta disponible
+                data.carpetas.forEach(function (carpeta) {
+                    // Crear una fila para la tabla con el nombre de la carpeta y los enlaces
+                    const fila = $('<tr>');
+                    fila.append(`<td>${carpeta}</td>`); // Columna para el nombre de la carpeta
+
+                    // Columna para el select de archivos
+                    const selectArchivos = $('<select>');
+                    selectArchivos.addClass('input-field');
+
+                    selectArchivos.append('<option disabled selected>Selecciona un archivo</option>');
+
+                    // Hacer una solicitud GET para obtener el contenido de la carpeta seleccionada
+                    $.get(`http://localhost:3000/contenidoCarpeta?carpeta=${carpeta}`, function (data) {
+                        // Generar las opciones del select en base al contenido de la carpeta
+                        data.contenido.forEach(function (item) {
+                            selectArchivos.append($('<option>', {
+                                value: item,
+                                text: item
+                            }));
+                        });
+                        // Actualizar el select con las nuevas opciones
+                        $('select').formSelect();
+                    });
+
+                    fila.append($('<td>').append(selectArchivos)); // Agregar el select a la fila
+
+                    fila.append('<td><a href="#" class="btn-small purple lighten-3 darken-1 editar"><i class="material-icons left">edit</i>Editar</a> <a href="#" class="btn-small purple accent-1 darken-1 eliminar"><i class="material-icons left">delete</i>Eliminar</a></td>');
+
+                    // Agregar la fila a la tabla
+                    tablaCarpetas.append(fila);
+                });
+
+                // Agregar evento de clic al botón "Editar"
+                tablaCarpetas.on('click', '.editar', function (event) {
+                    event.preventDefault();
+                    const carpetaSeleccionada = $(this).closest('tr').find('td:first-child').text(); // Obtener el nombre de la carpeta de esta fila
+                    const archivoSeleccionado = $(this).closest('tr').find('select').val(); // Obtener el archivo seleccionado en esta fila
+                    abrirModalEditar(carpetaSeleccionada, archivoSeleccionado);
+                });
+
+                // Agregar evento de clic al botón "Eliminar"
+                tablaCarpetas.on('click', '.eliminar', function (event) {
+                    event.preventDefault();
+                    const fila = $(this).closest('tr');
+                    const carpetaSeleccionada = fila.find('td:first-child').text();
+                    const archivoSeleccionado = fila.find('select').val();
+
+                    // Hacer una solicitud POST al servidor para borrar el archivo
+                    $.post('http://localhost:3000/borrarArchivo', {
+                        carpeta: carpetaSeleccionada,
+                        archivo: archivoSeleccionado
+                    }, function (response) {
+                        alert(response); // Muestra un mensaje de éxito o error
+                        // Eliminar la fila de la tabla
+                    }).fail(function () {
+                        alert('Error al borrar el archivo.');
+                    });
+                });
+
+            });
+
+
+
             // Cuando se cambia la carpeta seleccionada
             $('#carpeta').change(function () {
                 const carpetaSeleccionada = $(this).val();
-                
+
+
+
                 // Hacer una solicitud GET para obtener el contenido de la carpeta seleccionada
                 $.get(`http://localhost:3000/contenidoCarpeta?carpeta=${carpetaSeleccionada}`, function (data) {
                     const selectContenido = $('#contenido');
-                    selectContenido.empty(); // Limpia las opciones anteriores
-    
-                    // Genera las opciones del segundo select en base al contenido de la carpeta
+                    selectContenido.empty(); // Limpiar las opciones anteriores
+
+                    // Generar las opciones del segundo select en base al contenido de la carpeta
                     data.contenido.forEach(function (item) {
                         selectContenido.append($('<option>', {
                             value: item,
                             text: item
                         }));
                     });
+                    // Actualizar el segundo select con las nuevas opciones
+                    $('select').formSelect();
                 });
+            });
+
+            // Cuando se envía el formulario
+            $('#editarForm').submit(function (event) {
+                event.preventDefault(); // Evita que el formulario se envíe
+
+                const carpetaSeleccionada = $('#carpeta').val();
+                const archivoSeleccionado = $('#contenido').val();
 
                 // Hacer una solicitud GET para obtener el contenido del archivo seleccionado
                 $.get(`http://localhost:3000/contenidoArchivo?carpeta=${carpetaSeleccionada}&archivo=${archivoSeleccionado}`, function (data) {
                     $('#contenidoArchivo').val(data.contenido);
                 });
             });
-    
-            // Cuando se envía el formulario
-            $('#editarForm').submit(function (event) {
-                event.preventDefault(); // Evita que el formulario se envíe
-    
-                const carpetaSeleccionada = $('#carpeta').val();
-                const archivoSeleccionado = $('#contenido').val();
-    
-                // Hacer una solicitud GET para obtener el contenido del archivo seleccionado
-                $.get(`http://localhost:3000/contenidoArchivo?carpeta=${carpetaSeleccionada}&archivo=${archivoSeleccionado}`, function (data) {
-                    $('#contenidoArchivo').val(data.contenido);
-                });
-            });
-    
+
             // Cargar las carpetas disponibles
             $.get('http://localhost:3000/carpetasDisponibles', function (data) {
                 const selectCarpeta = $('#carpeta');
+
+                // Limpia el select antes de agregar nuevas opciones
+                selectCarpeta.empty();
+
                 // Genera las opciones del primer select en base a las carpetas disponibles
                 data.carpetas.forEach(function (carpeta) {
                     selectCarpeta.append($('<option>', {
@@ -162,6 +352,9 @@
                         text: carpeta
                     }));
                 });
+
+                // Después de agregar las opciones, actualiza el select de Materialize
+                $('select').formSelect();
             });
 
             $('#guardarBoton').click(function () {
@@ -209,15 +402,15 @@
                     console.log(data);
                     $('.tree').html(treeHtml);
                     //console.log(formatTree(data));
-                    
 
-                                // Puedes procesar y mostrar el árbol de la carpeta en tu página aquí
+
+                    // Puedes procesar y mostrar el árbol de la carpeta en tu página aquí
                 }).fail(function () {
                     alert('Error al explorar la carpeta.');
                 });
             });
 
-                    // Cuando se cambia la carpeta seleccionada
+            // Cuando se cambia la carpeta seleccionada
             $('#carpeta').change(function () {
                 // Cargar el contenido del archivo al seleccionar una carpeta y un archivo
                 cargarContenidoArchivo();
@@ -243,54 +436,55 @@
         }
 
         function generateTreeHtml(node) {
-    let html = '<ul>';
+            let html = '<ul>';
 
-    if (node.tipo === 'carpeta') {
-        html += `<li><i class="fa fa-folder-open"></i> ${node.nombre}`;
-        if (node.contenido && node.contenido.length > 0) {
-            html += '<ul>';
-            node.contenido.forEach(item => {
-                html += '<li>';
-                if (item.tipo === 'carpeta') {
-                    html += generateTreeHtml(item); // Recursión para generar el árbol de la carpeta
-                } else {
-                    html += `<i class="fa fa-file"></i> ${item.nombre}`;
+            if (node.tipo === 'carpeta') {
+                html += `<li><i class="fa fa-folder-open"></i> ${node.nombre}`;
+                if (node.contenido && node.contenido.length > 0) {
+                    html += '<ul>';
+                    node.contenido.forEach(item => {
+                        html += '<li>';
+                        if (item.tipo === 'carpeta') {
+                            html += generateTreeHtml(item); // Recursión para generar el árbol de la carpeta
+                        } else {
+                            html += `<i class="fa fa-file"></i> ${item.nombre}`;
+                        }
+                        html += '</li>';
+                    });
+                    html += '</ul>';
                 }
                 html += '</li>';
-            });
-            html += '</ul>';
-        }
-        html += '</li>';
-    } else {
-        html += `<li><i class="fa fa-file"></i> ${node.nombre}</li>`;
-    }
-
-    html += '</ul>';
-    return html;
-}
-
-function formatTree(node) {
-    let html = '<ul>';
-    for (const item of node) {
-        html += '<li>';
-        if (item.tipo === 'carpeta') {
-            html += `<i class="fa fa-folder-open"></i> ${item.nombre}`;
-            if (item.contenido && item.contenido.length > 0) {
-                html += formatTree(item.contenido); // Recursión para generar el árbol de la carpeta
+            } else {
+                html += `<li><i class="fa fa-file"></i> ${node.nombre}</li>`;
             }
-        } else {
-            html += `<i class="fa fa-file"></i> ${item.nombre.split('.').slice(0, -1).join('.')}`;
+
+            html += '</ul>';
+            return html;
         }
-        html += '</li>';
-    }
-    html += '</ul>';
-    return html;
-}
-        
-        
+
+        function formatTree(node) {
+            let html = '<ul>';
+            for (const item of node) {
+                html += '<li>';
+                if (item.tipo === 'carpeta') {
+                    html += `<i class="fa fa-folder-open"></i> ${item.nombre}`;
+                    if (item.contenido && item.contenido.length > 0) {
+                        html += formatTree(item.contenido); // Recursión para generar el árbol de la carpeta
+                    }
+                } else {
+                    html += `<i class="fa fa-file"></i> ${item.nombre.split('.').slice(0, -1).join('.')}`;
+                }
+                html += '</li>';
+            }
+            html += '</ul>';
+            return html;
+        }
 
 
-        
+
+
+
     </script>
 </body>
+
 </html>
